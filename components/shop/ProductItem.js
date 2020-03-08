@@ -1,5 +1,8 @@
 import React from 'react';
 import { 
+    TouchableOpacity,
+    TouchableNativeFeedback,
+    Platform,
     View,
     Text,
     Image,
@@ -10,26 +13,35 @@ import {
 import Colors from '../../constants/Colors';
 
 const ProductItem = props => {
+
+    let TouchableCmp = TouchableOpacity;
+    if (Platform.OS === 'android' && Platform.Version >= 21) {
+        TouchableCmp = TouchableNativeFeedback
+    }
+
     return (
-        <View style={styles.product}>
-            <Image
-                style={styles.image} 
-                source={{uri: props.imageUrl}} />
-            <View style={styles.details} >
-                <Text style={styles.title}>{props.title}</Text>
-                <Text style={styles.price}>${props.price.toFixed(2)}</Text>
+        <TouchableCmp 
+            onPress={props.onViewDetail}>
+            <View style={styles.product}>
+                <Image
+                    style={styles.image} 
+                    source={{uri: props.imageUrl}} />
+                <View style={styles.details} >
+                    <Text style={styles.title}>{props.title}</Text>
+                    <Text style={styles.price}>${props.price.toFixed(2)}</Text>
+                </View>
+                <View style={styles.actions}>
+                    <Button 
+                        color={Colors.primary}
+                        title="View Details"
+                        onPress={props.onViewDetail} />
+                    <Button 
+                        color={Colors.secondary}
+                        title="Add to Cart"
+                        onPress={props.onAddToCart} />
+                </View>
             </View>
-            <View style={styles.actions}>
-                <Button 
-                    color={Colors.primary}
-                    title="View Details"
-                    onPress={props.onViewDetails} />
-                <Button 
-                    color={Colors.secondary}
-                    title="Add to Cart"
-                    onPress={props.onAddToCart} />
-            </View>
-        </View>
+        </TouchableCmp>
     )
 };
 
@@ -68,7 +80,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        height: '25%',
+        height: '20%',
         paddingHorizontal: 20
     }
 });
