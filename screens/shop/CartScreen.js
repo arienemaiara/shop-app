@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Colors from '../../constants/Colors';
 import CardItem from '../../components/shop/CartItem';
 import * as cartActions from '../../store/actions/cart';
+import * as orderActions from '../../store/actions/order';
 
 const CartScreen = props => {
 
@@ -26,7 +27,9 @@ const CartScreen = props => {
                 sum: state.cart.items[key].sum,
             })
         }
-        return arrayCartItems;
+        return arrayCartItems.sort((a, b) => 
+            a.productId > b.productId ? 1 : -1 
+        );
     });
 
     const dispatch = useDispatch();
@@ -40,7 +43,11 @@ const CartScreen = props => {
                 <Button
                     color={Colors.success} 
                     title="Order Now"
-                    disabled={cartItems.length === 0} />
+                    disabled={cartItems.length === 0}
+                    onPress={() => {
+                        dispatch(orderActions.addOrder(cartItems, cartTotalAmount))
+                    }}
+                    />
             </View>
             <FlatList 
                 data={cartItems}
@@ -57,6 +64,10 @@ const CartScreen = props => {
             />
         </View>
     )
+};
+
+CartScreen.navigationOptions = {
+    headerTitle: 'Your Cart'
 };
 
 const styles = StyleSheet.create({
